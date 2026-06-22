@@ -1,0 +1,7 @@
+Name,Age,City,Salary,Department
+Alice,25,NYC,50000,IT
+Bob,,LA,60000,Sales
+Charlie,35,,,IT
+Diana,28,Houston,65000,
+Eve,,,58000,HR
+Frank,40,Miami,70000,IT
