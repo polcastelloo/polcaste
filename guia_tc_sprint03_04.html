@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Challenge · Sprint 03-04 — Catálogo de Películas</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --indigo:    #4F46E5;
+            --violet:    #7C3AED;
+            --sky:       #0EA5E9;
+            --lavender:  #C7D2FE;
+            --lilac:     #EDE9FE;
+            --amber:     #F59E0B;
+            --amber-lt:  #FEF3C7;
+            --green:     #10B981;
+            --green-lt:  #D1FAE5;
+            --rose:      #F43F5E;
+            --rose-lt:   #FFE4E6;
+            --cream:     #FAFAFA;
+            --white:     #FFFFFF;
+            --text-dark: #1E1B4B;
+            --text-mid:  #4C4A7A;
+            --text-lt:   #8B87B5;
+            --shadow:    rgba(79, 70, 229, 0.12);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', -apple-system, sans-serif;
+            background: var(--cream);
+            color: var(--text-dark);
+            line-height: 1.75;
+            overflow-x: hidden;
+        }
+
+        /* ── HEADER ─────────────────────────────────────── */
+        header {
+            background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 60%, #0EA5E9 100%);
+            padding: 5rem 2rem 4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        header::before {
+            content: '';
+            position: absolute; top: -80px; right: -80px;
+            width: 320px; height: 320px;
+            background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        header::after {
+            content: '';
+            position: absolute; bottom: -100px; left: -100px;
+            width: 360px; height: 360px;
+            background: radial-gradient(circle, rgba(14,165,233,0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .header-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.4);
+            color: #fff;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            margin-bottom: 1.5rem;
+            position: relative; z-index: 1;
+        }
+        h1 {
+            font-size: 3.2rem; font-weight: 800;
+            color: #fff;
+            line-height: 1.15;
+            position: relative; z-index: 1;
+            text-shadow: 0 2px 16px rgba(0,0,0,0.2);
+            margin-bottom: 1rem;
+        }
+        .header-sub {
+            color: rgba(255,255,255,0.85);
+            font-size: 1.2rem; font-weight: 500;
+            position: relative; z-index: 1;
+        }
+        .header-pills {
+            display: flex; flex-wrap: wrap; gap: 0.75rem;
+            justify-content: center;
+            margin-top: 2rem;
+            position: relative; z-index: 1;
+        }
+        .pill {
+            background: rgba(255,255,255,0.18);
+            border: 1.5px solid rgba(255,255,255,0.35);
+            color: #fff;
+            font-size: 0.9rem; font-weight: 600;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+        }
+
+        /* ── NAV ─────────────────────────────────────────── */
+        nav {
+            background: var(--white);
+            padding: 1.2rem 2rem;
+            border-bottom: 3px solid var(--lavender);
+            position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 4px 16px var(--shadow);
+        }
+        nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: 2.5rem; justify-content: center; }
+        nav a {
+            color: var(--text-mid); text-decoration: none;
+            font-weight: 600; font-size: 1rem;
+            padding: 0.4rem 0;
+            position: relative; transition: color 0.3s;
+        }
+        nav a:hover { color: var(--indigo); }
+        nav a::after {
+            content: ''; position: absolute; bottom: -2px; left: 0;
+            width: 0; height: 3px;
+            background: linear-gradient(90deg, var(--indigo), var(--violet));
+            border-radius: 2px; transition: width 0.3s;
+        }
+        nav a:hover::after { width: 100%; }
+
+        /* ── CONTAINER & SECTIONS ────────────────────────── */
+        .container { max-width: 1160px; margin: 0 auto; padding: 2rem; }
+
+        section {
+            margin: 2.5rem 0;
+            padding: 2.5rem;
+            background: var(--white);
+            border-radius: 20px;
+            border: 2.5px solid var(--lavender);
+            box-shadow: 0 8px 28px var(--shadow);
+        }
+
+        h2 {
+            font-size: 2.1rem; font-weight: 800;
+            color: var(--indigo);
+            margin-bottom: 2rem;
+            display: flex; align-items: center; gap: 0.9rem;
+        }
+        h2::before {
+            content: '';
+            width: 8px; height: 2.2rem;
+            background: linear-gradient(to bottom, var(--indigo), var(--sky));
+            border-radius: 4px; flex-shrink: 0;
+        }
+        h3 {
+            font-size: 1.55rem; font-weight: 700;
+            color: var(--violet);
+            margin: 2.5rem 0 1rem;
+        }
+        h4 {
+            font-size: 1.2rem; font-weight: 700;
+            color: var(--indigo);
+            margin: 1.75rem 0 0.75rem;
+        }
+        p { margin-bottom: 1.25rem; color: var(--text-mid); }
+        strong { color: var(--text-dark); font-weight: 700; }
+
+        ul, ol { margin: 1rem 0 1.25rem 2rem; color: var(--text-mid); }
+        li { margin: 0.6rem 0; }
+
+        /* ── CODE ────────────────────────────────────────── */
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--lilac);
+            color: var(--violet);
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.88em;
+            border: 1.5px solid var(--lavender);
+        }
+        pre {
+            background: #1E1B4B;
+            padding: 1.5rem 1.75rem;
+            border-radius: 14px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 2px solid #312E8D;
+        }
+        pre code {
+            background: none; border: none; padding: 0;
+            color: #C7D2FE;
+            font-size: 0.92rem; line-height: 1.85;
+        }
+        .cmd-block {
+            background: #1E1B4B;
+            border-left: 5px solid var(--sky);
+            padding: 1.25rem 1.5rem;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            color: #BAE6FD;
+            font-size: 0.92rem;
+            margin: 1.25rem 0;
+        }
+        .cmd-block::before { content: '$ '; color: var(--sky); font-weight: 700; }
+
+        /* ── CALLOUTS ────────────────────────────────────── */
+        .warning {
+            background: var(--rose-lt);
+            border-left: 5px solid var(--rose);
+            padding: 1.25rem 1.5rem;
+            border-radius: 12px; margin: 1.5rem 0;
+        }
+        .warning::before {
+            content: '⚠️  Importante';
+            display: block; font-weight: 700;
+            color: var(--rose); margin-bottom: 0.5rem;
+        }
+        .tip {
+            background: var(--green-lt);
+            border-left: 5px solid var(--green);
+            padding: 1.25rem 1.5rem;
+            border-radius: 12px; margin: 1.5rem 0;
+        }
+        .tip::before {
+            content: '💡 Consejo';
+            display: block; font-weight: 700;
+            color: var(--green); margin-bottom: 0.5rem;
+        }
+        .info {
+            background: var(--lavender);
+            border-left: 5px solid var(--indigo);
+            padding: 1.25rem 1.5rem;
+            border-radius: 12px; margin: 1.5rem 0;
+            color: var(--text-dark);
+        }
+        .info::before {
+            content: 'ℹ️  Nota';
+            display: block; font-weight: 700;
+            color: var(--indigo); margin-bottom: 0.5rem;
+        }
+        .optional-badge {
+            display: inline-block;
+            background: var(--amber-lt);
+            color: #92400E;
+            border: 1.5px solid var(--amber);
+            font-size: 0.8rem; font-weight: 700;
+            padding: 0.2rem 0.7rem;
+            border-radius: 50px;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+
+        /* ── GRID & CARDS ────────────────────────────────── */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem; margin: 1.5rem 0;
+        }
+        .grid-2 { grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+
+        .card {
+            background: linear-gradient(135deg, #FAFAFE 0%, var(--lilac) 100%);
+            border: 2px solid var(--lavender);
+            border-radius: 16px; padding: 1.75rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--indigo);
+            box-shadow: 0 12px 28px rgba(79,70,229,0.18);
+        }
+        .card h4 { margin-top: 0; }
+
+        /* ── PARTE HEADER CARDS ──────────────────────────── */
+        .parte-header {
+            display: flex; align-items: center; gap: 1rem;
+            padding: 1.5rem 2rem;
+            border-radius: 16px; margin-bottom: 2rem;
+            border: 2px solid;
+        }
+        .parte-num {
+            font-size: 2.5rem; font-weight: 800;
+            line-height: 1; flex-shrink: 0;
+        }
+        .parte-1 { background: #EEF2FF; border-color: var(--indigo); }
+        .parte-1 .parte-num { color: var(--indigo); }
+        .parte-2 { background: #F0F9FF; border-color: var(--sky); }
+        .parte-2 .parte-num { color: var(--sky); }
+        .parte-3 { background: var(--lilac); border-color: var(--violet); }
+        .parte-3 .parte-num { color: var(--violet); }
+        .parte-4 { background: var(--amber-lt); border-color: var(--amber); }
+        .parte-4 .parte-num { color: #92400E; }
+        .parte-header-text h3 { margin: 0; font-size: 1.3rem; }
+        .parte-header-text p { margin: 0.25rem 0 0; font-size: 0.95rem; }
+
+        /* ── TASK LIST ───────────────────────────────────── */
+        .task-list { list-style: none; margin-left: 0; }
+        .task-list li {
+            padding: 0.7rem 0.75rem 0.7rem 2.75rem;
+            position: relative;
+            border-bottom: 1.5px solid var(--lavender);
+        }
+        .task-list li:last-child { border-bottom: none; }
+        .task-list li::before {
+            content: '';
+            position: absolute; left: 0.6rem; top: 50%;
+            transform: translateY(-50%);
+            width: 20px; height: 20px;
+            border: 2.5px solid var(--lavender);
+            border-radius: 5px;
+            background: var(--white);
+        }
+
+        /* ── BRANCH FLOW DIAGRAM ─────────────────────────── */
+        .branch-diagram {
+            font-family: 'JetBrains Mono', monospace;
+            background: #1E1B4B;
+            color: #C7D2FE;
+            padding: 1.75rem 2rem;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            line-height: 2.1;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            border: 2px solid #312E8D;
+        }
+        .b-main  { color: #34D399; font-weight: 700; }
+        .b-dev   { color: #60A5FA; font-weight: 700; }
+        .b-feat  { color: #F9A8D4; font-weight: 700; }
+        .b-node  { color: #FCD34D; }
+        .b-arrow { color: #818CF8; }
+        .b-pr    { color: #F59E0B; font-weight: 700; }
+
+        /* ── STEP FLOW ───────────────────────────────────── */
+        .steps { display: flex; flex-direction: column; gap: 0; margin: 1.5rem 0; }
+        .step {
+            display: flex; gap: 1.25rem; align-items: flex-start;
+            padding: 1.25rem 0;
+            border-bottom: 1.5px dashed var(--lavender);
+        }
+        .step:last-child { border-bottom: none; }
+        .step-num {
+            flex-shrink: 0;
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--indigo), var(--violet));
+            color: #fff; font-weight: 800; font-size: 0.9rem;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin-top: 0.1rem;
+        }
+        .step-content h4 { margin: 0 0 0.4rem; }
+        .step-content p { margin: 0; }
+
+        /* ── PR TEMPLATE CARD ────────────────────────────── */
+        .pr-template {
+            background: #F8FAFF;
+            border: 2px dashed var(--indigo);
+            border-radius: 14px;
+            padding: 1.5rem 1.75rem;
+            margin: 1.25rem 0;
+        }
+        .pr-template h4 { margin-top: 0; }
+
+        /* ── TABLE ───────────────────────────────────────── */
+        table {
+            width: 100%; border-collapse: collapse;
+            margin: 1.5rem 0; border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px var(--shadow);
+            border: 2px solid var(--lavender);
+        }
+        th {
+            background: linear-gradient(135deg, var(--indigo), var(--violet));
+            color: #fff; padding: 1rem 1.25rem;
+            text-align: left; font-weight: 700;
+        }
+        td { padding: 1rem 1.25rem; border-top: 1.5px solid var(--lavender); color: var(--text-mid); }
+        tr:hover { background: #F5F3FF; }
+
+        /* ── DELIVERABLES BOX ────────────────────────────── */
+        .deliverables {
+            background: linear-gradient(135deg, #EEF2FF, var(--lilac));
+            border: 2.5px solid var(--indigo);
+            border-radius: 16px; padding: 2rem;
+            margin: 1.5rem 0;
+        }
+        .deliverables h4 { margin-top: 0; color: var(--indigo); }
+
+        /* ── FOOTER ──────────────────────────────────────── */
+        footer {
+            text-align: center; padding: 3rem 2rem;
+            color: var(--text-lt);
+            border-top: 3px solid var(--lavender);
+            background: var(--white); margin-top: 3rem;
+        }
+        footer p { color: var(--text-lt); margin-bottom: 0.25rem; }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            nav ul { flex-direction: column; gap: 1rem; align-items: center; }
+            section { padding: 1.5rem; }
+            .grid { grid-template-columns: 1fr; }
+            .parte-num { font-size: 1.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ══════════ HEADER ══════════ -->
+<header>
+    <div class="header-badge">Bootcamp IA Generativa</div>
+    <h1>Team Challenge · Sprint 03-04</h1>
+    <p class="header-sub">Catálogo de Películas con Pandas, APIs y Gemini</p>
+    <div class="header-pills">
+        <span class="pill">📊 Pandas</span>
+        <span class="pill">🎬 TMDB API</span>
+        <span class="pill">🤖 Gemini AI</span>
+        <span class="pill">🌿 Git Flow</span>
+        <span class="pill">👥 Trabajo en equipo</span>
+    </div>
+</header>
+
+<!-- ══════════ NAV ══════════ -->
+<nav>
+    <ul>
+        <li><a href="#organizacion">Organización del equipo</a></li>
+        <li><a href="#git-flow">Git Flow</a></li>
+        <li><a href="#parte1">Parte 1 · Pandas</a></li>
+        <li><a href="#parte2">Parte 2 · TMDB</a></li>
+        <li><a href="#parte3">Parte 3 · Gemini</a></li>
+        <li><a href="#parte4">Parte 4 · Opcional</a></li>
+        <li><a href="#entregables">Entregables</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+
+    <!-- ══════════ SECCIÓN 0: OVERVIEW ══════════ -->
+    <section id="overview" style="background: linear-gradient(135deg,#EEF2FF,var(--lilac)); border-color: var(--indigo);">
+        <h2>¿De qué va este reto?</h2>
+        <p>Trabajáis con un dataset de películas clásico (MovieLens) y construís un <strong>catálogo enriquecido</strong> en cuatro fases progresivas: análisis de datos con Pandas, consumo de una API REST (TMDB), traducción automática con Gemini y, si queréis ir más lejos, funcionalidades opcionales.</p>
+        <div class="grid grid-2">
+            <div class="card">
+                <h4>📁 Datasets de partida</h4>
+                <ul style="margin-left:1rem;">
+                    <li><code>movies.csv</code> — títulos y géneros</li>
+                    <li><code>ratings.csv</code> — valoraciones de usuarios</li>
+                    <li><code>tags.csv</code> — etiquetas libres</li>
+                    <li><code>links.csv</code> — IDs externos (TMDB, IMDb)</li>
+                </ul>
+                <p style="margin-top:0.75rem; margin-bottom:0;">Ruta: <code>Team_Challenges/TC_01_Sprint_03_04/data/</code></p>
+            </div>
+            <div class="card">
+                <h4>🔑 Credenciales necesarias</h4>
+                <ul style="margin-left:1rem;">
+                    <li><strong>TMDB:</strong> <code>TMDB_API_KEY</code> o <code>TMDB_READ_ACCESS_TOKEN</code></li>
+                    <li><strong>Gemini:</strong> <code>GEMINI_API_KEY</code></li>
+                </ul>
+                <div class="warning" style="margin-top:0.75rem;">Nunca subáis claves al repositorio. Usad <code>.env</code> + <code>.gitignore</code> o <code>getpass</code>.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════ SECCIÓN 1: ORGANIZACIÓN ══════════ -->
+    <section id="organizacion">
+        <h2>Organización del equipo</h2>
+
+        <p>Antes de escribir una sola línea de código, dedicad el <strong>primer día</strong> a establecer las bases de trabajo. La organización es la mitad del proyecto.</p>
+
+        <h3>Reparto de tareas sugerido</h3>
+        <p>Cada miembro lidera una parte, pero todos revisan el trabajo de los demás vía Pull Request.</p>
+
+        <div class="grid">
+            <div class="card">
+                <h4>👤 Persona A</h4>
+                <p>Crea el repositorio, configura <code>.gitignore</code>, escribe el README inicial y lidera la <strong>Parte 1 (Pandas)</strong>.</p>
+            </div>
+            <div class="card">
+                <h4>👤 Persona B</h4>
+                <p>Configura las variables de entorno y lidera la <strong>Parte 2 (TMDB API)</strong>.</p>
+            </div>
+            <div class="card">
+                <h4>👤 Persona C</h4>
+                <p>Lidera la <strong>Parte 3 (Gemini)</strong>. Si el equipo es de dos personas, repartid partes 2 y 3 entre ambas.</p>
+            </div>
+        </div>
+
+        <div class="tip">
+            Las personas que no lideran una parte son las <strong>revisoras</strong> de esa PR. Así todos tocan todo el código.
+        </div>
+
+        <h3>Checklist del primer día</h3>
+        <ul class="task-list">
+            <li>Repositorio creado en GitHub y compartido con todo el equipo</li>
+            <li>Rama <code>develop</code> creada desde <code>main</code></li>
+            <li>Protección de rama <code>main</code> activada (requiere PR + 1 aprobación)</li>
+            <li>README con nombre del proyecto, instrucciones de clonado y sección de dependencias</li>
+            <li><code>.gitignore</code> con <code>.env</code>, <code>venv/</code>, <code>*.pyc</code>, <code>__pycache__/</code></li>
+            <li><code>.env.example</code> con las variables necesarias (sin valores reales)</li>
+            <li>Reparto de tareas acordado y documentado en el README o en un issue</li>
+        </ul>
+    </section>
+
+    <!-- ══════════ SECCIÓN 2: GIT FLOW ══════════ -->
+    <section id="git-flow">
+        <h2>Git Flow del proyecto</h2>
+
+        <p>Usáis una versión adaptada de Git Flow con tres niveles de rama. La norma de oro: <strong>nunca se hace commit directo a <code>main</code></strong>.</p>
+
+        <h3>Estructura de ramas</h3>
+
+        <div class="branch-diagram">
+<span class="b-main">main</span>        <span class="b-arrow">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> producción estable
+                   <span class="b-arrow">↑ PR &amp; merge (squash)</span>              <span class="b-arrow">↑ PR &amp; merge</span>
+<span class="b-dev">develop</span>     <span class="b-arrow">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span> integración
+               <span class="b-arrow">↑ PR</span>       <span class="b-arrow">↑ PR</span>      <span class="b-arrow">↑ PR</span>     <span class="b-arrow">↑ PR</span>
+<span class="b-feat">feature/parte1-pandas</span>  <span class="b-feat">feature/tmdb</span>  <span class="b-feat">feature/gemini</span>  <span class="b-feat">feature/readme</span>
+        </div>
+
+        <div class="grid grid-2">
+            <div class="card">
+                <h4>🟢 <code>main</code></h4>
+                <p>Rama de producción. Solo contiene versiones estables y revisadas. Solo se actualiza mediante PR desde <code>develop</code>.</p>
+                <ul>
+                    <li>Protegida: requiere aprobación para merge</li>
+                    <li>Nunca se hace <code>git push</code> directo aquí</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4>🔵 <code>develop</code></h4>
+                <p>Rama de integración continua. Es vuestra rama de trabajo diario compartida.</p>
+                <ul>
+                    <li>Se crea una sola vez desde <code>main</code></li>
+                    <li>Las features se mergean aquí</li>
+                    <li>Al final del sprint, se mergea a <code>main</code></li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4>🌸 <code>feature/nombre</code></h4>
+                <p>Ramas cortas y de un solo propósito. Una por cada tarea o miembro.</p>
+                <ul>
+                    <li>Se crean siempre desde <code>develop</code></li>
+                    <li>Se borran tras el merge</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>Nombres de ramas recomendados</h3>
+        <table>
+            <tr><th>Tarea</th><th>Nombre de rama</th></tr>
+            <tr><td>Setup inicial del repo</td><td><code>feature/repo-setup</code></td></tr>
+            <tr><td>Parte 1 · Pandas</td><td><code>feature/parte1-pandas</code></td></tr>
+            <tr><td>Parte 2 · TMDB API</td><td><code>feature/tmdb-api</code></td></tr>
+            <tr><td>Parte 3 · Gemini</td><td><code>feature/gemini</code></td></tr>
+            <tr><td>Parte 4A · Catálogo</td><td><code>feature/catalogo-ampliado</code></td></tr>
+            <tr><td>Parte 4B · Recomendador</td><td><code>feature/recomendador</code></td></tr>
+            <tr><td>README final</td><td><code>docs/readme-final</code></td></tr>
+        </table>
+
+        <h3>Setup inicial del repositorio</h3>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <h4>Crear el repositorio en GitHub (una persona)</h4>
+                    <p>New repository → nombre sugerido: <code>tc-sprint03-04-peliculas</code>. Inicializar con README. Añadir colaboradores en Settings → Collaborators.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <h4>Proteger <code>main</code></h4>
+                    <p>Settings → Branches → Add rule → branch pattern: <code>main</code>. Marcar: ✅ Require a pull request, ✅ Require 1 approval, ✅ Dismiss stale reviews on new commits.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <h4>Crear la rama <code>develop</code></h4>
+                    <pre><code>git clone https://github.com/vuestro-usuario/tc-sprint03-04.git
+cd tc-sprint03-04
+git checkout -b develop
+git push origin develop</code></pre>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                    <h4>Todos clonan y configuran el entorno</h4>
+                    <pre><code>git clone https://github.com/vuestro-usuario/tc-sprint03-04.git
+cd tc-sprint03-04
+python -m venv venv
+source venv/bin/activate       # Mac/Linux
+venv\Scripts\activate          # Windows
+pip install -r requirements.txt
+cp .env.example .env           # Editar con vuestras claves</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <h3>Workflow diario</h3>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <h4>Partir siempre de <code>develop</code> actualizado</h4>
+                    <pre><code>git checkout develop
+git pull origin develop
+git checkout -b feature/mi-tarea</code></pre>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <h4>Trabajar y hacer commits descriptivos</h4>
+                    <pre><code>git add .
+git commit -m "feat: añadir función year_from_title"
+git commit -m "feat: merge ratings con movies"
+git commit -m "fix: corregir NaN en columna year"</code></pre>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <h4>Subir la rama y abrir PR hacia <code>develop</code></h4>
+                    <pre><code>git push origin feature/mi-tarea
+# → Abrir Pull Request en GitHub hacia develop</code></pre>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                    <h4>Un compañero revisa y aprueba</h4>
+                    <p>El revisor lee los cambios en "Files changed", deja comentarios si hay dudas y aprueba con "Approve" si todo está correcto.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">5</div>
+                <div class="step-content">
+                    <h4>Squash and merge + borrar rama</h4>
+                    <p>En GitHub, usar <strong>Squash and merge</strong> para mantener el historial limpio. Borrar la rama de feature (GitHub lo ofrece automáticamente).</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">6</div>
+                <div class="step-content">
+                    <h4>Sincronizar localmente</h4>
+                    <pre><code>git checkout develop
+git pull origin develop
+git branch -d feature/mi-tarea</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <h3>Formato de commits: Conventional Commits</h3>
+        <table>
+            <tr><th>Prefijo</th><th>Cuándo usarlo</th><th>Ejemplo para este TC</th></tr>
+            <tr><td><code>feat:</code></td><td>Nueva funcionalidad</td><td><code>feat: función fetch_movie_details con TMDB</code></td></tr>
+            <tr><td><code>fix:</code></td><td>Corrección de bug</td><td><code>fix: manejar tmdbId nulo en links.csv</code></td></tr>
+            <tr><td><code>docs:</code></td><td>Documentación</td><td><code>docs: añadir instrucciones de claves en README</code></td></tr>
+            <tr><td><code>refactor:</code></td><td>Refactorización sin cambio funcional</td><td><code>refactor: extraer groupby a función separada</code></td></tr>
+            <tr><td><code>chore:</code></td><td>Tareas de mantenimiento</td><td><code>chore: actualizar requirements.txt</code></td></tr>
+        </table>
+
+        <h3>Plantilla de Pull Request</h3>
+        <div class="pr-template">
+            <h4>Descripción del PR — <code>feature/tmdb-api</code></h4>
+            <pre><code>## ¿Qué hace este PR?
+- Implementa función `fetch_movie_details(tmdb_id)`
+- Añade columnas `overview` y `homepage` a movies10
+- Gestiona respuestas vacías y errores HTTP
+
+## Cómo probarlo
+1. Activar venv y ejecutar: pip install requests
+2. Configurar TMDB_API_KEY en .env
+3. Ejecutar la Parte 2 del notebook
+
+## Checklist
+- [x] Código probado localmente
+- [x] No hay claves en el código
+- [x] requirements.txt actualizado
+- [x] Celdas del notebook ejecutadas y con output</code></pre>
+        </div>
+
+        <h3>Manejo de conflictos</h3>
+        <p>Un conflicto ocurre cuando dos ramas modifican las mismas líneas. Resolución:</p>
+        <pre><code># 1. Actualizar tu rama con develop
+git checkout feature/mi-rama
+git pull origin develop
+
+# 2. Si hay conflictos, Git marcará los ficheros
+# Abre el fichero → edita las marcas:
+#   &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD   ← tu código
+#   =======
+#   código de develop
+#   &gt;&gt;&gt;&gt;&gt;&gt;&gt; develop
+
+# 3. Guardar, añadir y hacer commit
+git add fichero_resuelto.py
+git commit -m "fix: resolver conflictos con develop"
+git push origin feature/mi-rama</code></pre>
+
+        <div class="tip">
+            Para <strong>evitar conflictos</strong>, haced <code>git pull origin develop</code> en vuestra rama frecuentemente. Cuanto más sincronizados estéis, menos conflictos tendréis.
+        </div>
+    </section>
+
+    <!-- ══════════ SECCIÓN 3: PARTE 1 ══════════ -->
+    <section id="parte1">
+        <div class="parte-header parte-1">
+            <div class="parte-num">01</div>
+            <div class="parte-header-text">
+                <h3>Data Analytics con Pandas</h3>
+                <p>Carga, limpieza, combinación y análisis del dataset MovieLens</p>
+            </div>
+        </div>
+
+        <h3>1 · Ingesta de datos</h3>
+        <ul class="task-list">
+            <li>Cargar los cuatro CSV con Pandas desde <code>data/</code></li>
+            <li>Inspeccionar cada DataFrame: <code>shape</code>, <code>dtypes</code>, <code>head()</code> y conteo de nulos</li>
+        </ul>
+
+        <h3>2 · Columna <code>year</code> desde el título</h3>
+        <ul class="task-list">
+            <li>Implementar <code>year_from_title(title)</code> que extraiga el año entre paréntesis: <code>Batman (1989) → 1989</code></li>
+            <li>Devolver <code>NaN</code> si el título no sigue ese patrón</li>
+            <li>Añadir columna <code>year</code> con <code>pd.to_numeric(..., errors="coerce")</code></li>
+            <li>Editar <code>title</code> para eliminar el año del texto</li>
+            <li>Contar y mostrar títulos sin año reconocible (casos límite)</li>
+        </ul>
+
+        <h3>3 · Merge / Join</h3>
+        <ul class="task-list">
+            <li>Identificar las claves entre tablas (<code>movieId</code> une <code>movies</code>, <code>ratings</code>, <code>tags</code> y <code>links</code>)</li>
+            <li>Construir tabla <strong>película–usuario–rating</strong> (ratings enriquecida con título y géneros)</li>
+            <li>Construir tabla <strong>película–tags</strong></li>
+            <li>Documentar: tipo de join usado, duplicados generados y por qué es aceptable</li>
+        </ul>
+
+        <h3>4 · Agregaciones y segmentación</h3>
+        <ul class="task-list">
+            <li>Usar <code>groupby</code> con al menos una agregación multi-columna (<code>agg</code>)</li>
+            <li>Comparar dos segmentos: usuarios con muchas vs. pocas valoraciones, o películas por <strong>década</strong></li>
+        </ul>
+
+        <h3>5 · Preguntas sobre los datos</h3>
+        <div class="card">
+            <h4>Responder con código las siguientes 10 preguntas:</h4>
+            <ol style="margin-left:1.25rem;">
+                <li>¿Cuántas películas hay en total en <code>movies</code>?</li>
+                <li>¿Cuáles son las más antiguas según <code>year</code>?</li>
+                <li>¿Cuántas tienen "Dracula" en el título (sin distinguir mayúsculas)?</li>
+                <li>¿Cuáles son los títulos más repetidos?</li>
+                <li>Películas con "Exorcist" ordenadas de más antigua a más moderna</li>
+                <li>¿Cuántas películas tienen año 1950?</li>
+                <li>¿Cuántas entre 1950 y 1959 inclusive?</li>
+                <li>¿Qué año tiene la película con título exacto <code>Batman</code>? ¿Y las demás Batman?</li>
+                <li>Listado de películas con tags "sci-fi" <em>y</em> "adventure" simultáneamente</li>
+                <li>¿Cuál es el tag más repetido?</li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- ══════════ SECCIÓN 4: PARTE 2 ══════════ -->
+    <section id="parte2">
+        <div class="parte-header parte-2">
+            <div class="parte-num">02</div>
+            <div class="parte-header-text">
+                <h3>Petición HTTP a la API de TMDB</h3>
+                <p>Enriquecer 10 películas con datos de The Movie Database</p>
+            </div>
+        </div>
+
+        <h3>Endpoint a usar</h3>
+        <div class="cmd-block">GET https://api.themoviedb.org/3/movie/{tmdb_id}</div>
+        <p>El <code>tmdb_id</code> viene de la columna <code>tmdbId</code> del fichero <code>links.csv</code>.</p>
+
+        <h3>Tareas</h3>
+        <ul class="task-list">
+            <li>Construir <code>movies10</code>: las 10 primeras filas de <code>movies</code> que tengan <code>tmdbId</code> (merge con <code>links</code>)</li>
+            <li>Implementar <code>fetch_movie_details(tmdb_id)</code> que devuelva al menos <code>overview</code> y <code>homepage</code> (cadena vacía si vienen nulos)</li>
+            <li>Recorrer <code>movies10</code> y añadir ambas columnas al DataFrame</li>
+        </ul>
+
+        <h3>Autenticación</h3>
+        <div class="grid grid-2">
+            <div class="card">
+                <h4>Opción A — API Key</h4>
+                <pre><code>params = {"api_key": os.getenv("TMDB_API_KEY")}
+resp = requests.get(url, params=params)</code></pre>
+            </div>
+            <div class="card">
+                <h4>Opción B — Bearer Token</h4>
+                <pre><code>headers = {
+    "Authorization": f"Bearer {os.getenv('TMDB_READ_ACCESS_TOKEN')}"
+}
+resp = requests.get(url, headers=headers)</code></pre>
+            </div>
+        </div>
+        <div class="tip">Probad el endpoint en <strong>Postman</strong> antes de codificar. Es mucho más rápido depurar allí que en el notebook.</div>
+        <div class="warning">No guardéis claves en el notebook ni en ningún fichero que se suba al repositorio.</div>
+    </section>
+
+    <!-- ══════════ SECCIÓN 5: PARTE 3 ══════════ -->
+    <section id="parte3">
+        <div class="parte-header parte-3">
+            <div class="parte-num">03</div>
+            <div class="parte-header-text">
+                <h3>Sinopsis en español con Gemini</h3>
+                <p>Traducir y resumir los <code>overview</code> de TMDB usando la API de Gemini</p>
+            </div>
+        </div>
+
+        <div class="info">Requiere haber completado la Parte 2 (<code>movies10</code> con columna <code>overview</code>) y <code>pip install google-genai</code>.</div>
+
+        <h3>Tareas</h3>
+        <ul class="task-list">
+            <li>Configurar <code>GEMINI_API_KEY</code> (variable de entorno, <code>getpass</code> o <code>.env</code>)</li>
+            <li>Crear el cliente <code>google-genai</code></li>
+            <li>Implementar <code>summarize_overview_es(overview, title="")</code> que devuelva un <strong>resumen en español de máximo 2 frases</strong></li>
+            <li>Si <code>overview</code> está vacío, devolver cadena vacía <em>sin llamar a la API</em></li>
+            <li>Recorrer <code>movies10</code> y añadir columna <code>overview_es</code></li>
+            <li>Mostrar <code>title</code>, <code>overview</code> (recorte) y <code>overview_es</code> para 3 películas</li>
+        </ul>
+
+        <div class="card">
+            <h4>Esqueleto de la función</h4>
+            <pre><code>from google import genai
+import os
+
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+MODEL  = "gemini-2.0-flash"
+
+def summarize_overview_es(overview: str, title: str = "") -> str:
+    if not overview.strip():
+        return ""
+    prompt = (
+        f"Película: {title}\n"
+        f"Sinopsis original: {overview}\n\n"
+        "Resume esta sinopsis en español en máximo 2 frases."
+    )
+    resp = client.models.generate_content(model=MODEL, contents=prompt)
+    return resp.text.strip()</code></pre>
+        </div>
+    </section>
+
+    <!-- ══════════ SECCIÓN 6: PARTE 4 ══════════ -->
+    <section id="parte4">
+        <div class="parte-header parte-4">
+            <div class="parte-num">04</div>
+            <div class="parte-header-text">
+                <h3>Extensiones con Gemini <span class="optional-badge">Opcional</span></h3>
+                <p>Solo si el grupo ha completado las partes 1–3. Elegid A, B o ambas.</p>
+            </div>
+        </div>
+
+        <div class="grid grid-2">
+            <div class="card">
+                <h4>A) Catálogo ampliado</h4>
+                <p>Añadir a <code>movies10</code>, con <strong>una llamada JSON por película</strong>:</p>
+                <ul>
+                    <li><strong><code>pitch_es</code></strong>: texto de cartelera en español (máx. 280 caracteres)</li>
+                    <li><strong><code>edad_sugerida</code></strong>: uno de <code>TP</code>, <code>+7</code>, <code>+12</code>, <code>+16</code>, <code>+18</code></li>
+                    <li><strong><code>temas</code></strong>: exactamente 3 temas en español (cadena separada por comas)</li>
+                </ul>
+                <p>Función: <code>enrich_catalog_fields(overview, title, genres, year)</code></p>
+                <div class="tip" style="margin-top:0.75rem;">Basad la respuesta solo en sinopsis y metadatos. No inventéis reparto ni datos externos.</div>
+            </div>
+            <div class="card">
+                <h4>B) Recomendador por género</h4>
+                <p>Con <code>ratings_movies</code> de la Parte 1 y Gemini, implementar:</p>
+                <ul>
+                    <li><code>top_rated_by_genre(ratings_movies, genres, top_n=10, min_ratings=50)</code></li>
+                    <li><code>recommend_movies(candidates, favorite_genres, n=3)</code></li>
+                </ul>
+                <p>El modelo elige solo del catálogo candidato y justifica cada recomendación en español.</p>
+                <p>Probar con 1–2 géneros, p. ej. <code>["Action", "Sci-Fi"]</code>.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════ SECCIÓN 7: ENTREGABLES ══════════ -->
+    <section id="entregables">
+        <h2>Entregables y criterios de evaluación</h2>
+
+        <div class="deliverables">
+            <h4>📦 Repositorio de GitHub — lo que debe contener</h4>
+            <ul>
+                <li>Notebook ordenado y reproducible (celdas ejecutadas en orden)</li>
+                <li><code>README.md</code> con: cómo clonar, instalar dependencias, configurar claves y ejecutar</li>
+                <li><code>requirements.txt</code> actualizado</li>
+                <li><code>.env.example</code> con todas las variables necesarias (sin valores)</li>
+                <li><code>.gitignore</code> correctamente configurado</li>
+                <li>Historial de commits con mensajes descriptivos</li>
+                <li>Al menos <strong>una PR revisada y mergeada por cada miembro del equipo</strong></li>
+            </ul>
+        </div>
+
+        <h3>Checklist de calidad del código</h3>
+        <ul class="task-list">
+            <li>Las celdas están ordenadas y ejecutan sin errores de principio a fin</li>
+            <li>Las funciones tienen docstring o comentario de propósito</li>
+            <li>Los merges están justificados (tipo de join, filas perdidas)</li>
+            <li>No hay claves hardcodeadas en ningún fichero del repo</li>
+            <li>El README explica cómo reproducir el entorno desde cero</li>
+            <li>Se han resuelto los conflictos de ramas antes del merge</li>
+        </ul>
+
+        <h3>Referencia rápida de comandos</h3>
+        <div class="grid grid-2">
+            <div class="card">
+                <h4>Setup inicial</h4>
+                <pre><code>git clone URL
+cd repo
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+# editar .env con vuestras claves</code></pre>
+            </div>
+            <div class="card">
+                <h4>Workflow diario</h4>
+                <pre><code>git checkout develop
+git pull origin develop
+git checkout -b feature/mi-tarea
+# ... trabajar ...
+git add .
+git commit -m "feat: descripción"
+git push origin feature/mi-tarea
+# → abrir PR en GitHub hacia develop</code></pre>
+            </div>
+        </div>
+
+        <div class="tip">
+            <strong>Portfolio tip:</strong> si el README es bueno y el historial de commits está limpio, este proyecto puede vivir en vuestro GitHub como muestra de trabajo en equipo profesional.
+        </div>
+    </section>
+
+</div><!-- /container -->
+
+<footer>
+    <p>Team Challenge · Sprint 03-04 — Catálogo de Películas</p>
+    <p>Bootcamp IA Generativa · The Bridge Tech</p>
+</footer>
+
+</body>
+</html>
