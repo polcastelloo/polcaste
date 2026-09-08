@@ -5,3 +5,4 @@ pandas>=2.2.0
 faker>=30.0.0
 python-dotenv>=1.0.0
 pyarrow>=17.0.0
+matplotlib>=3.9.0
